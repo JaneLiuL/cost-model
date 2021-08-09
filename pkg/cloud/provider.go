@@ -2,9 +2,14 @@ package cloud
 
 import (
 	"database/sql"
+	"encoding/base64"
 	"errors"
 	"fmt"
+	"github.com/kubecost/cost-model/pkg/clustermanager"
+	"github.com/kubecost/cost-model/pkg/util"
 	"io"
+	"io/ioutil"
+	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -400,6 +405,7 @@ func NewProvider(cache clustercache.ClusterCache, apiKey string) (Provider, erro
 			},
 		}, nil
 	}
+
 	if metadata.OnGCE() {
 		klog.V(3).Info("metadata reports we are in GCE")
 		if apiKey == "" {
@@ -420,6 +426,15 @@ func NewProvider(cache clustercache.ClusterCache, apiKey string) (Provider, erro
 		}, nil
 	} else if strings.HasPrefix(provider, "azure") {
 		klog.V(2).Info("Found ProviderID starting with \"azure\", using Azure Provider")
+		if env.IsUseSecret() {
+			klog.Info("Use secret for profile")
+
+			// read secret from secret
+			return &Azure{
+				Clientset: cache,
+				Config: NewProviderConfig("/var/secrets/AzureSecret/auth"),
+			}, nil
+		}
 		return &Azure{
 			Clientset: cache,
 			Config:    NewProviderConfig("azure.json"),

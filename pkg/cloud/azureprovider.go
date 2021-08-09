@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -833,6 +834,12 @@ func (az *Azure) DownloadPricingData() error {
 	}
 
 	az.Pricing = allPrices
+	// write price into file
+	jsonData, _ := json.Marshal(az.Pricing)
+	jsonFile, _ := os.Create("models.json")
+	defer jsonFile.Close()
+	jsonFile.Write(jsonData)
+
 	return nil
 }
 

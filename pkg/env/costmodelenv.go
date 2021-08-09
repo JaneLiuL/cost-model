@@ -29,6 +29,8 @@ const (
 	RemotePWEnvVar                 = "REMOTE_WRITE_PASSWORD"
 	SQLAddressEnvVar               = "SQL_ADDRESS"
 	UseCSVProviderEnvVar           = "USE_CSV_PROVIDER"
+	UseSecret				       = "UseSecret"
+
 	CSVRegionEnvVar                = "CSV_REGION"
 	CSVEndpointEnvVar              = "CSV_ENDPOINT"
 	CSVPathEnvVar                  = "CSV_PATH"
@@ -179,6 +181,9 @@ func IsUseCSVProvider() bool {
 	return GetBool(UseCSVProviderEnvVar, false)
 }
 
+func IsUseSecret() bool {
+	return GetBool(UseSecret, false)
+}
 // GetCSVRegion returns the environment variable value for CSVRegionEnvVar which represents the
 // region configured for a CSV provider.
 func GetCSVRegion() string {
